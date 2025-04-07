@@ -27,11 +27,67 @@ print("Welcome to the UW Calculator Playground")
 //: For this latter set of operations, it is safe to assume that `["count"]` (with no additional arguments) is 0, `["avg"]` is also 0, and `["fact"]` is 0. `["1", "fact"]` should return 1, and `["0", "fact"]` should also return 1. (Yes, 0-factorial is 1. True story.)
 //: 
 func calculate(_ args: [String]) -> Int {
-    return -1
+    let inputLength = args.count
+    // case where it's just an operation
+    if inputLength == 1 {
+        return 0
+    }
+    // we have a operational problem
+    if inputLength == 3 {
+        let num1 = Int(args[0])!
+        let num2 = Int(args[2])!
+        let operation = args[1]
+        
+        if operation == "+" {
+            return num1 + num2
+        } else if operation == "-" {
+            return num1 - num2
+        } else if operation == "*" {
+            return num1 * num2
+        } else if operation == "/" {
+            return num1 / num2
+        } else {
+            return num1 % num2
+        }
+    } else { // we have a special problem
+        let operation = args[inputLength-1]
+        if operation == "fact" {
+            let num = Int(args[0])!
+            if num == 0 {
+                return 1
+            }
+            var total = 1
+            for i in 1...num {
+                total = total * i
+            }
+            return total
+        } else if operation == "count" {
+            return inputLength - 1
+        } else {
+            var sum = 0
+            for i in 0...inputLength-2 {
+                let currVal = args[i]
+                let currNum = Int(currVal)!
+                sum += currNum
+            }
+            return sum / (inputLength-1)
+        }
+    }
 }
 
 func calculate(_ arg: String) -> Int {
-    return -1
+    var components : [String] = []
+    var currPiece = ""
+    for char in arg {
+        if char == " " {
+            components.append(currPiece)
+            currPiece = ""
+        } else {
+            currPiece += String(char)
+        }
+    }
+    components.append(currPiece)
+    return calculate(components)
 }
 
 //: Below this are the test expressions/calls to verify if your code is correct.
@@ -85,7 +141,7 @@ calculate("5 fact") == 120
 //: Implement `calculate([String])` and `calculate(String)` to handle negative numbers. You need only make the tests below pass. (You do not need to worry about "fact"/factorial with negative numbers, for example.)
 //:
 //: This is worth 1 pt
-/*
+
 calculate(["2", "+", "-2"]) == 0
 calculate(["2", "-", "-2"]) == 4
 calculate(["2", "*", "-2"]) == -4
@@ -100,7 +156,7 @@ calculate("2 - -2") == 4
 calculate("-2 / 2") == -1
 
 calculate("1 -2 3 -4 5 count") == 5
-*/
+
  
 //: Implement `calculate([String])` and `calculate(String)` to use 
 //: and return floating-point values. You need only make the tests 
@@ -112,12 +168,58 @@ calculate("1 -2 3 -4 5 count") == 5
 //: Integer-based versions above.
 //: 
 //: This is worth 1 pt
-/*
+
 func calculate(_ args: [String]) -> Double {
-    return -1.0
+ let inputLength = args.count
+ // case where it's just an operation
+ if inputLength == 1 {
+     return 0
+ }
+ // we have a operational problem
+ if inputLength == 3 {
+     let num1 = Double(args[0])!
+     let num2 = Double(args[2])!
+     let operation = args[1]
+     
+     if operation == "+" {
+         return num1 + num2
+     } else if operation == "-" {
+         return num1 - num2
+     } else if operation == "*" {
+         return num1 * num2
+     } else if operation == "/" {
+         return num1 / num2
+     } else {
+         return num1.truncatingRemainder(dividingBy: num2)
+     }
+ } else { // we have a special problem
+     let operation = args[inputLength-1]
+     if operation == "count" {
+         return Double(inputLength - 1)
+     } else {
+         var sum = 0.0
+         for i in 0...inputLength-2 {
+             let currVal = args[i]
+             let currNum = Double(currVal)!
+             sum += currNum
+         }
+         return sum / Double(inputLength-1)
+     }
+ }
 }
 func calculate(_ arg: String) -> Double {
-    return -1.0
+    var components : [String] = []
+    var currPiece = ""
+    for char in arg {
+        if char == " " {
+            components.append(currPiece)
+            currPiece = ""
+        } else {
+            currPiece += String(char)
+        }
+    }
+    components.append(currPiece)
+    return calculate(components)
 }
 
 calculate(["2.0", "+", "2.0"]) == 4.0
@@ -127,4 +229,4 @@ calculate(["2.5", "*", "2.5"]) == 6.25
 calculate(["2.0", "/", "2.0"]) == 1.0
 calculate(["2.0", "%", "2.0"]) == 0.0
 calculate("1.0 2.0 3.0 4.0 5.0 count") == 5.0
-*/
+
